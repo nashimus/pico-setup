@@ -3,25 +3,16 @@
 # Exit on error
 set -e
 
-if grep -q Raspberry /proc/cpuinfo; then
-    echo "Running on a Raspberry Pi"
-else
-    echo "Not running on a Raspberry Pi. Use at your own risk!"
-fi
-
 # Number of cores when running make
-JNUM=4
+JNUM=16
 
 # Where will the output go?
 OUTDIR="$(pwd)/pico"
 
 # Install dependencies
 GIT_DEPS="git"
-SDK_DEPS="cmake gcc-arm-none-eabi gcc g++"
-OPENOCD_DEPS="gdb-multiarch automake autoconf build-essential texinfo libtool libftdi-dev libusb-1.0-0-dev"
-# Wget to download the deb
-VSCODE_DEPS="wget"
-UART_DEPS="minicom"
+SDK_DEPS="cmake cross-arm-none-eabi-gcc gcc cross-arm-none-eabi-newlib cross-arm-none-eabi-libstdc++"
+OPENOCD_DEPS="cross-arm-none-eabi-gdb automake autoconf texinfo libtool libftdi1-devel libusb-devel"
 
 # Build full list of dependencies
 DEPS="$GIT_DEPS $SDK_DEPS"
@@ -32,15 +23,8 @@ else
     DEPS="$DEPS $OPENOCD_DEPS"
 fi
 
-if [[ "$SKIP_VSCODE" == 1 ]]; then
-    echo "Skipping VSCODE"
-else
-    DEPS="$DEPS $VSCODE_DEPS"
-fi
-
 echo "Installing Dependencies"
-sudo apt update
-sudo apt install -y $DEPS
+sudo xbps-install -Syu $DEPS
 
 echo "Creating $OUTDIR"
 # Create pico directory to put everything in
@@ -55,6 +39,8 @@ SDK_BRANCH="master"
 for REPO in sdk examples extras playground
 do
     DEST="$OUTDIR/pico-$REPO"
+
+    #rm -rf $DEST # clean up
 
     if [ -d $DEST ]; then
         echo "$DEST already exists so skipping"
@@ -101,6 +87,7 @@ cd $OUTDIR
 for REPO in picoprobe picotool
 do
     DEST="$OUTDIR/$REPO"
+    #rm -rf $DEST # clean up
     REPO_URL="${GITHUB_PREFIX}${REPO}${GITHUB_SUFFIX}"
     git clone $REPO_URL
 
@@ -149,37 +136,14 @@ fi
 cd $OUTDIR
 
 # Liam needed to install these to get it working
-EXTRA_VSCODE_DEPS="libx11-xcb1 libxcb-dri3-0 libdrm2 libgbm1 libegl-mesa0"
 if [[ "$SKIP_VSCODE" == 1 ]]; then
     echo "Won't include VSCODE"
 else
-    if [ -f vscode.deb ]; then
-        echo "Skipping vscode as vscode.deb exists"
-    else
-        echo "Installing VSCODE"
-        if uname -m | grep -q aarch64; then
-            VSCODE_DEB="https://aka.ms/linux-arm64-deb"
-        else
-            VSCODE_DEB="https://aka.ms/linux-armhf-deb"
-        fi
+    echo "Installing VSCODE"
+    sudo xbps-install -Syu vscode
 
-        wget -O vscode.deb $VSCODE_DEB
-        sudo apt install -y ./vscode.deb
-        sudo apt install -y $EXTRA_VSCODE_DEPS
-
-        # Get extensions
-        code --install-extension marus25.cortex-debug
-        code --install-extension ms-vscode.cmake-tools
-        code --install-extension ms-vscode.cpptools
-    fi
-fi
-
-# Enable UART
-if [[ "$SKIP_UART" == 1 ]]; then
-    echo "Skipping uart configuration"
-else
-    sudo apt install -y $UART_DEPS
-    echo "Disabling Linux serial console (UART) so we can use it for pico"
-    sudo raspi-config nonint do_serial 2
-    echo "You must run sudo reboot to finish UART setup"
+    # Get extensions
+    code-oss --install-extension marus25.cortex-debug
+    code-oss --install-extension ms-vscode.cmake-tools
+    code-oss --install-extension ms-vscode.cpptools
 fi
