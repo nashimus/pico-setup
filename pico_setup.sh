@@ -131,6 +131,16 @@ else
     ./configure $OPENOCD_CONFIGURE_ARGS
     make -j$JNUM
     sudo make install
+
+    if [ -f /etc/udev/rules.d/60-openocd.rules ]; then
+        echo "openocd udev rules exist, skipping"
+    else
+        echo "generating openocd udev rules"
+        sudo tee /etc/udev/rules.d/60-openocd.rules &>/dev/null <<EOF
+    # Raspberry Pi Picoprobe
+    ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="0004", MODE="660", GROUP="plugdev", TAG+="uaccess"
+    EOF
+    fi
 fi
 
 cd $OUTDIR
