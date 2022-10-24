@@ -130,7 +130,7 @@ else
     ./bootstrap
     ./configure $OPENOCD_CONFIGURE_ARGS
     make -j$JNUM
-    sudo make install
+    #sudo make install
 
     if [ -f /etc/udev/rules.d/60-openocd.rules ]; then
         echo "openocd udev rules exist, skipping"
