@@ -11,8 +11,21 @@ OUTDIR="$HOME/pico"
 
 # Install dependencies
 GIT_DEPS="git"
-SDK_DEPS="cmake cross-arm-none-eabi-gcc gcc cross-arm-none-eabi-newlib cross-arm-none-eabi-libstdc++"
-OPENOCD_DEPS="cross-arm-none-eabi-gdb automake autoconf texinfo libtool libftdi1-devel libusb-devel"
+SDK_DEPS=" \
+    cmake \
+    arm-none-eabi-gcc-cs \
+    gcc \
+    arm-none-eabi-newlib \
+    arm-none-eabi-gcc-cs-c++
+"
+OPENOCD_DEPS=" \
+    automake \
+    autoconf \
+    texinfo \
+    libtool \
+    libftdi-devel \
+    libusb1-devel
+"
 SERIAL_DEPS="screen"
 
 # Build full list of dependencies
@@ -25,7 +38,7 @@ else
 fi
 
 echo "Installing Dependencies"
-sudo xbps-install -Syu $DEPS
+sudo dnf install -y $DEPS
 
 echo "Creating $OUTDIR"
 # Create pico directory to put everything in
