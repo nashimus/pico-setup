@@ -7,7 +7,7 @@ set -e
 JNUM=16
 
 # Where will the output go?
-OUTDIR="$(pwd)/pico"
+OUTDIR="$HOME/pico"
 
 # Install dependencies
 GIT_DEPS="git"
