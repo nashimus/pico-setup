@@ -144,16 +144,3 @@ else
 fi
 
 cd $OUTDIR
-
-# Liam needed to install these to get it working
-if [[ "$SKIP_VSCODE" == 1 ]]; then
-    echo "Won't include VSCODE"
-else
-    echo "Installing VSCODE"
-    sudo xbps-install -Syu vscode
-
-    # Get extensions
-    code-oss --install-extension marus25.cortex-debug
-    code-oss --install-extension ms-vscode.cmake-tools
-    code-oss --install-extension ms-vscode.cpptools
-fi
