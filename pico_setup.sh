@@ -13,9 +13,10 @@ OUTDIR="$HOME/pico"
 GIT_DEPS="git"
 SDK_DEPS="cmake cross-arm-none-eabi-gcc gcc cross-arm-none-eabi-newlib cross-arm-none-eabi-libstdc++"
 OPENOCD_DEPS="cross-arm-none-eabi-gdb automake autoconf texinfo libtool libftdi1-devel libusb-devel"
+SERIAL_DEPS="screen"
 
 # Build full list of dependencies
-DEPS="$GIT_DEPS $SDK_DEPS"
+DEPS="$GIT_DEPS $SDK_DEPS $SERIAL_DEPS"
 
 if [[ "$SKIP_OPENOCD" == 1 ]]; then
     echo "Skipping OpenOCD (debug support)"
