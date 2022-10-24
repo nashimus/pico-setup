@@ -137,9 +137,9 @@ else
     else
         echo "generating openocd udev rules"
         sudo tee /etc/udev/rules.d/60-openocd.rules &>/dev/null <<EOF
-    # Raspberry Pi Picoprobe
-    ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="0004", MODE="660", GROUP="plugdev", TAG+="uaccess"
-    EOF
+# Raspberry Pi Picoprobe
+ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="0004", MODE="660", GROUP="plugdev", TAG+="uaccess"
+EOF
     fi
 fi
 
