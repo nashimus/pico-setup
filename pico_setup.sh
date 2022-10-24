@@ -56,8 +56,8 @@ do
 
         # Define PICO_SDK_PATH in ~/.bashrc
         VARNAME="PICO_${REPO^^}_PATH"
-        echo "Adding $VARNAME to ~/.bashrc"
-        echo "export $VARNAME=$DEST" >> ~/.bashrc
+        echo "Updating $VARNAME in ~/.bashrc"
+        sed -i "/export ${VARNAME}=.*/c\export ${VARNAME}\=$DEST/g" ~/.bashrc
         export ${VARNAME}=$DEST
     fi
 done
