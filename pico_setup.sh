@@ -4,7 +4,8 @@
 set -e
 
 # Number of cores when running make
-JNUM=16
+JNUM=$(lscpu | grep "^CPU(s):" | sed 's/^CPU(s):\ *//g')
+echo "Detected $JNUM logical CPUs. Building with -j$JNUM".
 
 # Where will the output go?
 OUTDIR="$(pwd)/pico"
