@@ -3,6 +3,8 @@
 # Exit on error
 set -e
 
+ORIGDIR=$(pwd)
+
 # Number of cores when running make
 JNUM=16
 
@@ -155,6 +157,15 @@ else
 ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="0004", MODE="660", GROUP="plugdev", TAG+="uaccess"
 EOF
     fi
+fi
+
+if [ -f $OUTDIR/arm-none-eabi-gdb ]; then
+    echo "$OUTDIR/arm-none-eabi-gdb already exists so skipping"
+else
+    echo "$OUTDIR/arm-none-eabi-gdb missing. Building..."
+    cd $ORIGDIR
+    ./build_arm-none-eabi-gdb.sh
+    cp arm-none-eabi-gdb $OUTDIR/
 fi
 
 cd $OUTDIR
