@@ -91,18 +91,20 @@ cd $OUTDIR
 source ~/.bashrc
 
 # Build a couple of examples
-cd "$OUTDIR/pico-examples"
-mkdir build
-cd build
-cmake ../ -DCMAKE_BUILD_TYPE=Debug
+if [ ! -d $OUTDIR/pico-examples/build ]; then
+    cd "$OUTDIR/pico-examples"
+    mkdir build
+    cd build
+    cmake ../ -DCMAKE_BUILD_TYPE=Debug
 
-for e in blink hello_world
-do
-    echo "Building $e"
-    cd $e
-    make -j$JNUM
-    cd ..
-done
+    for e in blink hello_world
+    do
+        echo "Building $e"
+        cd $e
+        make -j$JNUM
+        cd ..
+    done
+fi
 
 cd $OUTDIR
 
@@ -111,22 +113,25 @@ for REPO in picoprobe picotool
 do
     DEST="$OUTDIR/$REPO"
     #rm -rf $DEST # clean up
-    REPO_URL="${GITHUB_PREFIX}${REPO}${GITHUB_SUFFIX}"
-    git clone $REPO_URL
+    if [ -d $DEST ]; then
+        echo "$DEST already exists so skipping"
+    else
+        REPO_URL="${GITHUB_PREFIX}${REPO}${GITHUB_SUFFIX}"
+        git clone $REPO_URL
 
-    # Build both
-    cd $DEST
-    mkdir build
-    cd build
-    cmake ../
-    make -j$JNUM
+        # Build both
+        cd $DEST
+        mkdir build
+        cd build
+        cmake ../
+        make -j$JNUM
 
-    if [[ "$REPO" == "picotool" ]]; then
-        echo "Installing picotool to /usr/local/bin/picotool"
-        sudo cp picotool /usr/local/bin/
+        if [[ "$REPO" == "picotool" ]]; then
+            echo "Installing picotool to /usr/local/bin/picotool"
+            sudo cp picotool /usr/local/bin/
+        fi
+        cd $OUTDIR
     fi
-
-    cd $OUTDIR
 done
 
 if [ -d openocd ]; then
