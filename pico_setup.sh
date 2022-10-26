@@ -73,8 +73,14 @@ do
 
         # Define PICO_SDK_PATH in ~/.bashrc
         VARNAME="PICO_${REPO^^}_PATH"
-        echo "Updating $VARNAME in ~/.bashrc"
-        sed -i "/export ${VARNAME}=.*/c\export ${VARNAME}\=$DEST/g" ~/.bashrc
+        if grep -q "export ${VARNAME}=" ~/.bashrc; then
+            echo "Updating $VARNAME in ~/.bashrc"
+            sed -i "/export ${VARNAME}=.*/c\export ${VARNAME}\=$DEST/" ~/.bashrc
+        else
+            echo "Adding $VARNAME to ~/.bashrc"
+            echo "export $VARNAME=$DEST" >> ~/.bashrc
+        fi
+
         export ${VARNAME}=$DEST
     fi
 done
