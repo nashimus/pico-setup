@@ -8,7 +8,7 @@ JNUM=$(lscpu | grep "^CPU(s):" | sed 's/^CPU(s):\ *//g')
 echo "Detected $JNUM logical CPUs. Building with -j$JNUM".
 
 # Where will the output go?
-OUTDIR="$(pwd)/pico"
+OUTDIR="$HOME/pico"
 
 # Install dependencies
 GIT_DEPS="git"
